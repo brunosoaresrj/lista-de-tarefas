@@ -12,11 +12,44 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const loadData = async () => {
+    setLoading(true);
+
+    const res = await fetch(API + "/todos")
+      .then((res) => res.json())
+      .then((data)=> data)
+      .catch((err) => console.log(err));
+
+      setLoading(false)
+
+      setTodos(res);
+    };
+    loadData();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(title);
-    console.log("Enviou");
+ 
+    const todo = {
+      id: Math.random(),
+      title,
+      time,
+      done: false,
+
+    }
+
+    //Envio para a API
+   await fetch(API + "/todos", {
+    method: "POST",
+    body: JSON.stringify(todo),
+    headers: {
+      "Content-Type": "application/json",
+    },
+   })
+
     setTitle("");
+    setTime("");
   };
   
   return (
